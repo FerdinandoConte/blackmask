@@ -1,0 +1,450 @@
+{
+ "bm": {
+  "idle": [
+   {
+    "file": "bm_idle_0.png",
+    "ax": 0.538,
+    "h": 147,
+    "w": 93,
+    "bottom": 167
+   },
+   {
+    "file": "bm_idle_1.png",
+    "ax": 0.527,
+    "h": 147,
+    "w": 93,
+    "bottom": 167
+   },
+   {
+    "file": "bm_idle_2.png",
+    "ax": 0.532,
+    "h": 147,
+    "w": 94,
+    "bottom": 167
+   },
+   {
+    "file": "bm_idle_3.png",
+    "ax": 0.543,
+    "h": 147,
+    "w": 94,
+    "bottom": 167
+   },
+   {
+    "file": "bm_idle_4.png",
+    "ax": 0.548,
+    "h": 146,
+    "w": 93,
+    "bottom": 166
+   },
+   {
+    "file": "bm_idle_5.png",
+    "ax": 0.538,
+    "h": 148,
+    "w": 93,
+    "bottom": 167
+   }
+  ],
+  "walk": [
+   {
+    "file": "bm_walk_0.png",
+    "ax": 0.657,
+    "h": 131,
+    "w": 86,
+    "bottom": 163
+   },
+   {
+    "file": "bm_walk_1.png",
+    "ax": 0.671,
+    "h": 132,
+    "w": 85,
+    "bottom": 163
+   },
+   {
+    "file": "bm_walk_2.png",
+    "ax": 0.655,
+    "h": 131,
+    "w": 87,
+    "bottom": 163
+   },
+   {
+    "file": "bm_walk_3.png",
+    "ax": 0.667,
+    "h": 132,
+    "w": 87,
+    "bottom": 163
+   },
+   {
+    "file": "bm_walk_4.png",
+    "ax": 0.655,
+    "h": 132,
+    "w": 84,
+    "bottom": 163
+   },
+   {
+    "file": "bm_walk_5.png",
+    "ax": 0.623,
+    "h": 132,
+    "w": 77,
+    "bottom": 163
+   }
+  ],
+  "walkb": [
+   {
+    "file": "bm_walkb_0.png",
+    "ax": 0.655,
+    "h": 132,
+    "w": 84,
+    "bottom": 311
+   },
+   {
+    "file": "bm_walkb_1.png",
+    "ax": 0.632,
+    "h": 133,
+    "w": 76,
+    "bottom": 311
+   },
+   {
+    "file": "bm_walkb_2.png",
+    "ax": 0.658,
+    "h": 133,
+    "w": 79,
+    "bottom": 311
+   },
+   {
+    "file": "bm_walkb_3.png",
+    "ax": 0.623,
+    "h": 132,
+    "w": 77,
+    "bottom": 311
+   },
+   {
+    "file": "bm_walkb_4.png",
+    "ax": 0.655,
+    "h": 131,
+    "w": 87,
+    "bottom": 310
+   },
+   {
+    "file": "bm_walkb_5.png",
+    "ax": 0.651,
+    "h": 133,
+    "w": 83,
+    "bottom": 311
+   }
+  ],
+  "punch": [
+   {
+    "file": "bm_punch_0.png",
+    "ax": 0.504,
+    "h": 130,
+    "w": 113,
+    "bottom": 311
+   },
+   {
+    "file": "bm_punch_1.png",
+    "ax": 0.504,
+    "h": 130,
+    "w": 113,
+    "bottom": 311
+   },
+   {
+    "file": "bm_punch_2.png",
+    "ax": 0.5,
+    "h": 129,
+    "w": 114,
+    "bottom": 311
+   }
+  ],
+  "punchb": [
+   {
+    "file": "bm_punchb_0.png",
+    "ax": 0.513,
+    "h": 131,
+    "w": 115,
+    "bottom": 458
+   },
+   {
+    "file": "bm_punchb_1.png",
+    "ax": 0.5,
+    "h": 131,
+    "w": 114,
+    "bottom": 458
+   },
+   {
+    "file": "bm_punchb_2.png",
+    "ax": 0.491,
+    "h": 131,
+    "w": 114,
+    "bottom": 458
+   },
+   {
+    "file": "bm_punchb_3.png",
+    "ax": 0.5,
+    "h": 130,
+    "w": 114,
+    "bottom": 458
+   }
+  ],
+  "kick": [
+   {
+    "file": "bm_kick_0.png",
+    "ax": 0.43,
+    "h": 135,
+    "w": 114,
+    "bottom": 457
+   },
+   {
+    "file": "bm_kick_1.png",
+    "ax": 0.403,
+    "h": 135,
+    "w": 119,
+    "bottom": 457
+   },
+   {
+    "file": "bm_kick_2.png",
+    "ax": 0.393,
+    "h": 134,
+    "w": 122,
+    "bottom": 457
+   },
+   {
+    "file": "bm_kick_3.png",
+    "ax": 0.403,
+    "h": 138,
+    "w": 119,
+    "bottom": 457
+   },
+   {
+    "file": "bm_kick_4.png",
+    "ax": 0.417,
+    "h": 135,
+    "w": 115,
+    "bottom": 457
+   }
+  ],
+  "nunchaku": [
+   {
+    "file": "bm_nunchaku_0.png",
+    "ax": 0.432,
+    "h": 147,
+    "w": 148,
+    "bottom": 609
+   },
+   {
+    "file": "bm_nunchaku_1.png",
+    "ax": 0.437,
+    "h": 148,
+    "w": 135,
+    "bottom": 610
+   },
+   {
+    "file": "bm_nunchaku_2.png",
+    "ax": 0.4,
+    "h": 149,
+    "w": 135,
+    "bottom": 609
+   },
+   {
+    "file": "bm_nunchaku_3.png",
+    "ax": 0.403,
+    "h": 149,
+    "w": 134,
+    "bottom": 609
+   },
+   {
+    "file": "bm_nunchaku_4.png",
+    "ax": 0.407,
+    "h": 150,
+    "w": 135,
+    "bottom": 609
+   },
+   {
+    "file": "bm_nunchaku_5.png",
+    "ax": 0.463,
+    "h": 144,
+    "w": 123,
+    "bottom": 609
+   }
+  ],
+  "hit": [
+   {
+    "file": "bm_hit_0.png",
+    "ax": 0.523,
+    "h": 142,
+    "w": 87,
+    "bottom": 760
+   },
+   {
+    "file": "bm_hit_1.png",
+    "ax": 0.632,
+    "h": 137,
+    "w": 87,
+    "bottom": 760
+   },
+   {
+    "file": "bm_hit_2.png",
+    "ax": 0.641,
+    "h": 137,
+    "w": 92,
+    "bottom": 760
+   },
+   {
+    "file": "bm_hit_3.png",
+    "ax": 0.615,
+    "h": 132,
+    "w": 78,
+    "bottom": 760
+   }
+  ],
+  "ko": [
+   {
+    "file": "bm_ko_0.png",
+    "ax": 0.651,
+    "h": 128,
+    "w": 129,
+    "bottom": 758
+   },
+   {
+    "file": "bm_ko_1.png",
+    "ax": 0.646,
+    "h": 126,
+    "w": 130,
+    "bottom": 759
+   },
+   {
+    "file": "bm_ko_2.png",
+    "ax": 0.494,
+    "h": 63,
+    "w": 154,
+    "bottom": 755
+   },
+   {
+    "file": "bm_ko_3.png",
+    "ax": 0.555,
+    "h": 59,
+    "w": 164,
+    "bottom": 757
+   }
+  ],
+  "victory": [
+   {
+    "file": "bm_victory_0.png",
+    "ax": 0.659,
+    "h": 178,
+    "w": 88
+   },
+   {
+    "file": "bm_victory_1.png",
+    "ax": 0.271,
+    "h": 192,
+    "w": 85
+   }
+  ],
+  "drink": [
+   {
+    "file": "bm_drink_0.png",
+    "ax": 0.281,
+    "h": 158,
+    "w": 89
+   }
+  ]
+ },
+ "ml": {
+  "idle": [
+   {
+    "file": "ml_idle_0.png",
+    "ax": 0.23,
+    "h": 305,
+    "w": 183
+   }
+  ],
+  "punch": [
+   {
+    "file": "ml_punch_0.png",
+    "ax": 0.51,
+    "h": 300,
+    "w": 255
+   },
+   {
+    "file": "ml_punch_1.png",
+    "ax": 0.494,
+    "h": 300,
+    "w": 261
+   }
+  ],
+  "hit": [
+   {
+    "file": "ml_hit_0.png",
+    "ax": 0.397,
+    "h": 300,
+    "w": 252
+   }
+  ],
+  "hug": [
+   {
+    "file": "ml_hug_0.png",
+    "ax": 0.573,
+    "h": 284,
+    "w": 267
+   }
+  ],
+  "ko": [
+   {
+    "file": "ml_ko_0.png",
+    "ax": 0.495,
+    "h": 175,
+    "w": 289
+   }
+  ]
+ },
+ "hench": {
+  "flee": [
+   {
+    "file": "hench_flee_0.png",
+    "ax": 0.716,
+    "h": 287,
+    "w": 225
+   }
+  ],
+  "hit": [
+   {
+    "file": "hench_hit_0.png",
+    "ax": 0.464,
+    "h": 302,
+    "w": 209
+   }
+  ],
+  "block": [
+   {
+    "file": "hench_block_0.png",
+    "ax": 0.653,
+    "h": 299,
+    "w": 150
+   }
+  ],
+  "ko": [
+   {
+    "file": "hench_ko_0.png",
+    "ax": 0.477,
+    "h": 144,
+    "w": 241
+   }
+  ],
+  "punch": [
+   {
+    "file": "hench_punch_0.png",
+    "ax": 0.492,
+    "h": 299,
+    "w": 258
+   }
+  ],
+  "idle": [
+   {
+    "file": "hench_idle_0.png",
+    "ax": 0.646,
+    "h": 299,
+    "w": 181
+   }
+  ]
+ }
+}
