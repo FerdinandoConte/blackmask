@@ -24,7 +24,7 @@ const sgn = v => (v < 0 ? -1 : 1);
 
 // ================================================================ assets
 const IMG = {};
-const baseImgs = ['scene.jpg', 'blackmask.png', 'mastro.png', 'hench.png', 'plane.png', 'spritz.png',
+const baseImgs = ['fe_fwalk_0.png', 'fe_fwalk_1.png', 'fe_fsick_0.png', 'fe_erun_0.png', 'fe_erun_1.png', 'fe_carry_0.png', 'carpet_fly.png', 'scene.jpg', 'blackmask.png', 'mastro.png', 'hench.png', 'plane.png', 'spritz.png',
   'vs_blackmask.jpg', 'vs_mastro.jpg', 'vs_hench.jpg', 'vs_ginevra.jpg', 'vs_christian.jpg',
   'card_fede.jpg', 'card_ginevra.jpg', 'card_elisabetta.jpg', 'card_enrico.jpg', 'card_arianna.jpg', 'card_ferdy.jpg',
   'card_emma.jpg', 'card_matteo.jpg', 'card_daniele.jpg', 'card_christian.jpg', 'card_tommaso.jpg', 'card_mari.jpg',
@@ -565,7 +565,7 @@ function updateEnemies(dt) {
       if (e.t > (G.round === 2 ? 0.55 : 0.62) * D.ewind) { e.state = 'punch'; e.t = 0; if (Math.abs(e.x - P.x) < 150) playerHurt(e.dmg, e.x); }
     } else if (e.state === 'punch') { if (e.t > 0.25) { e.state = 'walk'; e.cool = rnd(0.8, 1.6) * D.ewind; } }
     const fe = G.hazards.find(h => h.type === 'ferdy' && !h.done);
-    if (fe && Math.abs(e.x - fe.x) < 36) ferdyFail(fe);
+    if (fe && fe.t > fe.enter && Math.abs(e.x - fe.x) < 36) ferdyFail(fe);
   }
   G.enemies = G.enemies.filter(e => !e.dead);
 }
@@ -668,7 +668,7 @@ const EVENTS = {
   samba() { banner('enrico', 'ENRICO + ARIANNA', 'SAMBA HEX', '#21c45a'); musicOverride('samba', 6.5); G.fx.push({ type: 'brazil', t: 0, life: 6.5 }); G.enemies.forEach(e => { if (!e.ko) { e.dance = 6; e.state = 'walk'; e.danceHit = rnd(0.3, 1); } }); if (B.alive && B.phase >= 2 && ['idle', 'guard', 'recover'].includes(B.state)) { B.state = 'dance'; B.t = 0; } },
   carpet() { banner('mari', 'MARI · SOFIA · ILARIA · MIRIANA', 'MAGIC CARPET', '#2fd3c8'); G.hazards.push({ type: 'carpet', t: 0, life: 4.5, threw: false }); },
   banana() { banner('banana', 'BANANA GUY', 'BANANA PEEL (WATCH YOUR STEP)', '#ffe36b', 1.4); const x = clamp(P.x + pick([-1, 1]) * rnd(140, 220), 70, W - 70); G.hazards.push({ type: 'banana', x, t: 0, done: false, life: 16 }); },
-  ferdy() { if (G.hazards.find(h => h.type === 'ferdy')) return; const x = clamp(P.x + pick([-1, 1]) * 200, 90, W - 90); G.hazards.push({ type: 'ferdy', x, t: 0, taps: 0, done: false, life: 8.5 }); bubble('FERDY NEEDS HELP! TAP HIM 10 TIMES!', 480, 110, 'warn', 2.6); SFX.bad(); },
+  ferdy() { if (G.hazards.find(h => h.type === 'ferdy')) return; const x = clamp(P.x + pick([-1, 1]) * 200, 270, W - 270); G.hazards.push({ type: 'ferdy', x, from: x < W / 2 ? -1 : 1, enter: 1.6, t: 0, taps: 0, done: false, life: 10.1 }); bubble('FERDY NEEDS HELP! TAP HIM 10 TIMES!', 480, 110, 'warn', 2.6); SFX.bad(); },
 };
 function spawnItem(kind) { const x = clamp(P.x + pick([-1, 1]) * rnd(120, 260), 70, W - 70); G.items.push({ kind, x, y: -30, t: 0, got: false }); if (kind === 'spritz' || kind === 'shot') floatText(kind === 'shot' ? 'DRINK?' : 'SPRITZ! WALK OVER IT', x, 200, '#ff9a2e', 10, 1.4, -10); if (kind === 'pear') floatText('PEAR JUICE!', x, 200, '#b8f55a', 10, 1.4, -10); }
 function collect(it) {
@@ -680,12 +680,48 @@ function collect(it) {
   else if (it.kind === 'heart') { P.hp = Math.min(P.maxhp, P.hp + 8); floatText('+8', P.x, 190, '#ff6b9a', 16); SFX.pickup(); }
   burst(it.x, FLOOR - 30, '#ffe36b', 10, 200, 4, 0.5, 300, true);
 }
+function spr(im, x, y, h, o = {}) { // draw sprite with feet at (x,y)
+  if (!im.width) return; const w = h * im.width / im.height; ctx.save(); ctx.translate(x, y); if (o.rot) ctx.rotate(o.rot); if (o.flip) ctx.scale(-1, 1); if (o.alpha !== undefined) ctx.globalAlpha = o.alpha;
+  if (o.glow) { ctx.shadowColor = o.glow; ctx.shadowBlur = o.glowSize || 14; } ctx.drawImage(im, -w / 2, -h, w, h); ctx.restore(); }
+function shadow(x, w) { ctx.fillStyle = 'rgba(0,0,0,.45)'; ctx.beginPath(); ctx.ellipse(x, FLOOR + 2, w, 9, 0, 0, 7); ctx.fill(); }
+function drawFerdy(h) {
+  const S = 250 / (IMG.fe_fwalk_0.height || 300), side = h.from, fh = im => im.height * S;
+  const fw = () => IMG[Math.floor(G.t * 5) % 2 ? 'fe_fwalk_1' : 'fe_fwalk_0'], er = () => IMG[Math.floor(G.t * 10) % 2 ? 'fe_erun_1' : 'fe_erun_0'];
+  if (!h.done) {
+    const k = clamp(h.t / h.enter, 0, 1), x = lerp(side < 0 ? -90 : W + 90, h.x, k);
+    if (k < 1) {
+      const im = fw(); shadow(x, 40);
+      spr(im, x, FLOOR + 4 - Math.abs(Math.sin(G.t * 10)) * 4, fh(im), { rot: Math.sin(G.t * 4) * 0.12, flip: side > 0 });
+      if (Math.floor(G.t * 3) % 2) text('HIC!', x + 30, FLOOR - 270, 10, '#d8ffb0', 'center', '#000', 4);
+    } else {
+      const im = IMG.fe_fsick_0; shadow(h.x, 70);
+      const gl = ctx.createRadialGradient(h.x, FLOOR - 80, 10, h.x, FLOOR - 80, 110); gl.addColorStop(0, `rgba(150,255,110,${0.16 + 0.1 * Math.sin(G.t * 5)})`); gl.addColorStop(1, 'rgba(150,255,110,0)'); ctx.fillStyle = gl; ctx.fillRect(h.x - 110, FLOOR - 190, 220, 200);
+      spr(im, h.x, FLOOR + 4, fh(im) * (1 + 0.02 * Math.sin(G.t * 6)), { flip: side > 0 });
+      if (Math.random() < 0.05) G.particles.push({ x: h.x + (side > 0 ? -1 : 1) * rnd(0, 20), y: FLOOR - fh(im) * 0.55, vx: (side > 0 ? -1 : 1) * rnd(10, 50), vy: rnd(10, 60), life: 0.8, max: 0.8, color: '#a8e04a', size: rnd(3, 6), grav: 500 });
+      text('FERDY', h.x, FLOOR - fh(im) - 14, 10, '#b8f55a', 'center', '#000', 4);
+    }
+    return;
+  }
+  if (h.failed) { const im = IMG.fe_fsick_0, k = clamp((h.t - h.endAt) / 0.4, 0, 1); shadow(h.x, 80); spr(im, h.x, FLOOR + 4, fh(im), { rot: -1.2 * k * (side > 0 ? -1 : 1), flip: side > 0, alpha: clamp(h.life - h.t, 0, 1) }); return; }
+  const s = h.t - h.endAt, ex = h.x < W / 2 ? -1 : 1;  // Emma runs in from the closest edge and takes him away that way
+  if (s < 0.9) {
+    const im = IMG.fe_fsick_0; shadow(h.x, 70); spr(im, h.x, FLOOR + 4, fh(im), { flip: side > 0 });
+    const ek = s / 0.9, x = lerp(ex < 0 ? -80 : W + 80, h.x + ex * 75, ek), ei = er();
+    shadow(x, 40); spr(ei, x, FLOOR + 4 - Math.abs(Math.sin(G.t * 10)) * 6, fh(ei), { flip: ex > 0 });
+    text('EMMA!', x, FLOOR - 285, 10, '#ffffff', 'center', '#000', 4);
+  } else {
+    const im = IMG.fe_carry_0, k = (s - 0.9) / 1.9, x = lerp(h.x, ex < 0 ? -200 : W + 200, k * k);
+    shadow(x, 70); spr(im, x, FLOOR + 4 - Math.abs(Math.sin(G.t * 7)) * 4, fh(im), { flip: ex < 0, rot: Math.sin(G.t * 7) * 0.03 });
+    if (k < 0.5) text('TO MY ROOM!', x, FLOOR - fh(im) - 12, 10, '#fff', 'center', '#000', 4);
+  }
+}
 function ferdyTap(f) {
+  if (f.t < f.enter) return;
   f.taps++; burst(f.x, 380, '#b8f55a', 6); tone(400 + f.taps * 60, 0.08, 'square', 0.15);
-  if (f.taps >= 10) { f.done = true; f.life = f.t + 1.2; f.saved = true; banner('emma', 'EMMA', 'TAKES FERDY TO HER ROOM', '#ffffff');
+  if (f.taps >= 10) { f.done = true; f.endAt = f.t; f.life = f.t + 2.9; f.saved = true; banner('emma', 'EMMA', 'TAKES FERDY TO HER ROOM', '#ffffff');
     P.bac = 0; P.hp = Math.min(P.maxhp, P.hp + 10); CARDS.forEach(c => { if (!c.once) c.t = 0; }); floatText('FERDY SAVED! BAC 0 · CARDS READY', 480, 180, '#7CFC00', 14, 1.6, -15); SFX.fanfare(); G.score += 500; }
 }
-function ferdyFail(f) { if (f.done) return; f.done = true; f.life = f.t + 1.2; f.failed = true; floatText('FERDY DOWN!', f.x, 300, '#ff5050', 18); playerHurt(15); SFX.siren(); }
+function ferdyFail(f) { if (f.done) return; f.done = true; f.endAt = f.t; f.life = f.t + 1.4; f.failed = true; floatText('FERDY DOWN!', f.x, 300, '#ff5050', 18); playerHurt(15); SFX.siren(); }
 function useCard(i) {
   if (G.state !== 'fight' || P.dead) return;
   const c = CARDS[i];
@@ -755,9 +791,9 @@ function updateHazards(dt) {
   for (const it of G.items) { it.t += dt; it.y = Math.min(FLOOR - 26, it.y + 260 * dt); if (it.t > 10) it.got = true; }
   G.items = G.items.filter(i => !i.got);
 }
-const R1_SCHEDULE = [[7, 'spritz'], [12, 'glass'], [17, 'carpet'], [23, 'massi'], [28, 'spit'], [33, 'puddle'], [38, 'pear'], [43, 'ferdy'], [52, 'lullaby'], [58, 'grab'],
-  [64, 'shot'], [69, 'samba'], [77, 'banana'], [82, 'glass'], [86, 'massi'], [92, 'spritz'], [98, 'puddle'], [104, 'glass']];
-const R2_POOL = ['spritz', 'glass', 'massi', 'spit', 'puddle', 'lullaby', 'grab', 'samba', 'carpet', 'banana', 'shot', 'pear', 'ferdy', 'glass', 'spritz'];
+const R1_SCHEDULE = [[7, 'spritz'], [12, 'glass'], [17, 'carpet'], [28, 'spit'], [33, 'puddle'], [38, 'pear'], [43, 'ferdy'], [52, 'lullaby'], [58, 'grab'],
+  [64, 'shot'], [69, 'samba'], [77, 'banana'], [82, 'glass'], [92, 'spritz'], [98, 'puddle'], [104, 'glass']];
+const R2_POOL = ['spritz', 'glass', 'spit', 'puddle', 'lullaby', 'grab', 'samba', 'carpet', 'banana', 'shot', 'pear', 'ferdy', 'glass', 'spritz'];
 
 // ================================================================ flow
 const INTRO = [
@@ -986,12 +1022,55 @@ function drawGlass(x, y, red = false) {
   if (red) text('x3', 0, 0, 8, '#fff', 'center', '#000', 3);
   ctx.restore();
 }
+// ---------- pixel-art pickups (drawn once on tiny canvases, scaled with nearest neighbour)
+const PIX = {};
+function pixCanvas(w, h, fn) { const c = document.createElement('canvas'); c.width = w; c.height = h; const g = c.getContext('2d'); const p = (x, y, col) => { g.fillStyle = col; g.fillRect(x, y, 1, 1); }; fn(p, g); return c; }
+PIX.spritz = pixCanvas(22, 30, (p, g) => {
+  const cx = 11, K = '#1a1020';
+  for (let y = 5; y <= 15; y++) {
+    const hw = Math.round(9 - Math.pow(y - 5, 2) / 14);
+    for (let x = cx - hw; x < cx + hw; x++) {
+      let c = y < 8 ? '#ffb347' : y < 12 ? '#ff7a1a' : '#e0520c';
+      if (x === cx - hw + 1) c = '#ffe2b8'; if (x === cx - hw + 2 && y > 6) c = '#ffc98a';
+      if (x >= cx + hw - 2) c = y < 10 ? '#e86812' : '#b8400a';
+      if (y === 5) c = (x % 3 === 0) ? '#fff4d6' : '#ffd9a0';
+      p(x, y, c);
+    }
+    p(cx - hw - 1, y, K); p(cx + hw, y, K);
+  }
+  for (let x = cx - 9; x <= cx + 9; x++) p(x, 4, (x === cx - 9 || x === cx + 9) ? K : '#d8f0ff');
+  for (let x = cx - 3; x <= cx + 3; x++) p(x, 16, K);
+  [[5, 8], [10, 10], [7, 12]].forEach(([x, y]) => { g.fillStyle = '#eaf8ff'; g.fillRect(x, y, 3, 3); p(x, y, '#ffffff'); p(x + 2, y + 2, '#a8d8f0'); });
+  [[13, 7], [15, 9], [12, 13], [9, 6], [14, 12]].forEach(([x, y]) => p(x, y, '#fff0c8'));
+  for (let i = 0; i < 13; i++) p(17 - Math.round(i * 0.45), i, i % 2 ? '#ff2d55' : '#ffffff');
+  g.fillStyle = '#ff8c00'; g.beginPath(); g.arc(3.5, 5.5, 3.5, 0, 7); g.fill(); g.fillStyle = '#ffc94a'; g.beginPath(); g.arc(3.5, 5.5, 2.3, 0, 7); g.fill(); p(3, 5, '#fff3c0'); p(4, 6, '#fff3c0'); p(2, 4, '#fff3c0');
+  for (let y = 17; y <= 24; y++) { p(cx - 1, y, '#d8f0ff'); p(cx, y, '#a8cce6'); p(cx - 2, y, K); p(cx + 1, y, K); }
+  for (let x = cx - 6; x <= cx + 5; x++) { p(x, 25, '#d8f0ff'); p(x, 26, K); } p(cx - 7, 25, K); p(cx + 6, 25, K); for (let x = cx - 4; x <= cx + 3; x++) p(x, 24, K);
+});
+PIX.shot = pixCanvas(12, 15, (p, g) => {
+  const K = '#1a1020';
+  for (let y = 1; y <= 12; y++) { const l = 1 + Math.floor(y / 6), r = 10 - Math.floor(y / 6); p(l, y, K); p(r, y, K); for (let x = l + 1; x < r; x++) p(x, y, y < 4 ? '#e8f6ff' : (x === l + 1 ? '#fff6dc' : x >= r - 1 ? '#c98a1a' : '#f2b440')); }
+  for (let x = 1; x <= 10; x++) p(x, 0, '#d8f0ff'); for (let x = 2; x <= 9; x++) { p(x, 13, '#d8f0ff'); p(x, 14, K); }
+  p(4, 5, '#ffffff'); p(6, 8, '#ffe9a8');
+});
+PIX.pear = pixCanvas(16, 20, (p, g) => {
+  const K = '#24330f';
+  const inside = (x, y) => Math.hypot((x - 8) / 6.2, (y - 13) / 6) < 1 || Math.hypot((x - 8) / 3.6, (y - 6.5) / 4) < 1;
+  for (let y = 0; y < 20; y++) for (let x = 0; x < 16; x++) {
+    if (inside(x, y)) { let c = '#a6e04a'; if (x < 7 && y < 13) c = '#d4ff8a'; if (x > 10 || y > 16) c = '#6fae22'; if (x === 5 && y >= 8 && y <= 12) c = '#f2ffd0'; p(x, y, c); }
+    else if (inside(x + 1, y) || inside(x - 1, y) || inside(x, y + 1) || inside(x, y - 1)) p(x, y, K);
+  }
+  p(8, 1, '#6b3d1e'); p(8, 0, '#6b3d1e'); p(9, 0, '#6b3d1e'); p(10, 1, '#2f9e3a'); p(11, 1, '#2f9e3a'); p(11, 2, '#2f9e3a'); p(12, 1, '#1f7a2a');
+});
+function drawPix(c, x, y, scale) { ctx.imageSmoothingEnabled = false; ctx.drawImage(c, Math.round(x - c.width * scale / 2), Math.round(y - c.height * scale), c.width * scale, c.height * scale); ctx.imageSmoothingEnabled = true; }
 function drawItem(it) {
   const bob = it.y >= FLOOR - 26 ? Math.sin(G.t * 5 + it.x) * 3 : 0, y = it.y + bob;
-  ctx.save(); ctx.shadowColor = '#fff'; ctx.shadowBlur = 14;
-  if (it.kind === 'spritz') { if (IMG.spritz.width) { const h = 56, w = h * IMG.spritz.width / IMG.spritz.height; ctx.drawImage(IMG.spritz, it.x - w / 2, y - h + 24, w, h); } else drawGlass(it.x, y); }
-  else if (it.kind === 'shot') drawGlass(it.x, y, true);
-  else if (it.kind === 'pear') { ctx.fillStyle = '#b8f55a'; ctx.beginPath(); ctx.ellipse(it.x, y + 6, 15, 17, 0, 0, 7); ctx.fill(); ctx.beginPath(); ctx.ellipse(it.x, y - 11, 9, 11, 0, 0, 7); ctx.fill(); ctx.fillStyle = '#6b3d1e'; ctx.fillRect(it.x - 2, y - 28, 4, 9); }
+  ctx.save();
+  if (it.kind !== 'heart') { const gc = it.kind === 'pear' ? '184,245,90' : '255,170,60', gl = ctx.createRadialGradient(it.x, y + 4, 2, it.x, y + 4, 46); gl.addColorStop(0, `rgba(${gc},${0.35 + 0.15 * Math.sin(G.t * 6)})`); gl.addColorStop(1, `rgba(${gc},0)`); ctx.fillStyle = gl; ctx.fillRect(it.x - 46, y - 42, 92, 92);
+    ctx.fillStyle = 'rgba(0,0,0,.35)'; ctx.beginPath(); ctx.ellipse(it.x, FLOOR - 1, 18, 4, 0, 0, 7); ctx.fill(); }
+  if (it.kind === 'spritz') drawPix(PIX.spritz, it.x, y + 26, 3);
+  else if (it.kind === 'shot') { drawPix(PIX.shot, it.x, y + 26, 3); text('x3', it.x + 22, y - 10, 8, '#ffe36b', 'center', '#000', 3); }
+  else if (it.kind === 'pear') drawPix(PIX.pear, it.x, y + 26, 3);
   else if (it.kind === 'heart') { ctx.fillStyle = '#ff4b8b'; ctx.beginPath(); ctx.moveTo(it.x, y + 12); ctx.bezierCurveTo(it.x - 22, y - 4, it.x - 10, y - 20, it.x, y - 8); ctx.bezierCurveTo(it.x + 10, y - 20, it.x + 22, y - 4, it.x, y + 12); ctx.fill(); }
   ctx.restore();
 }
@@ -1081,14 +1160,18 @@ function drawHazards() {
     }
     if (h.type === 'massi') { drawChar('hench', h.fall ? 'ko' : 'walk', h.x, -h.side, { h: 230, rot: h.fall ? 0 : Math.sin(G.t * 8) * 0.18, filter: 'sepia(1) saturate(3) hue-rotate(40deg) brightness(1.2)' }); text('MASSIMILIANO', h.x, FLOOR - 250, 9, '#ffe36b', 'center', '#000', 4); if (!h.done && h.t < 1.2) text(h.side < 0 ? '◀ BLOCK!' : 'BLOCK! ▶', h.side < 0 ? 110 : 850, 250, 14, '#ff5050', 'center', '#000', 5); }
     if (h.type === 'spit') { for (let i = 0; i < 6; i++) { const k = clamp(h.t / 0.6 - i * 0.05, 0, 1); ctx.fillStyle = 'rgba(210,255,170,.9)'; ctx.beginPath(); ctx.ellipse(h.x + (i - 3) * 24, lerp(-20, 330, k), 7, 11, 0, 0, 7); ctx.fill(); } if (h.t > 0.6) text('PTUH!', h.x, 180, 22, '#c8ff6b', 'center', '#000', 6); text("DANIELE'S SPIT · 5TH FLOOR", h.x, 40, 8, '#fff', 'center', '#000', 3); }
-    if (h.type === 'carpet') { const k = h.t / h.life, im = IMG.card_carpet; if (im.width) { const w = 240, hh = 240 * im.height / im.width; ctx.save(); ctx.shadowColor = '#2fd3c8'; ctx.shadowBlur = 20; ctx.drawImage(im, lerp(W + 20, -260, k), 70 + Math.sin(G.t * 3) * 8, w, hh); ctx.restore(); } }
+    if (h.type === 'carpet') { const k = h.t / h.life, im = IMG.carpet_fly; if (im.width) {
+      const w = 300, hh = w * im.height / im.width, x0 = lerp(W + 30, -w - 30, k), y0 = 40 + Math.sin(G.t * 2.6) * 10, sw = im.width / w;
+      for (let i = 0; i < 3; i++) G.particles.push({ x: x0 + w * rnd(0.55, 1.0), y: y0 + hh * rnd(0.75, 0.98), vx: rnd(20, 70), vy: rnd(-10, 25), life: 0.7, max: 0.7, color: pick(['#2fd3c8', '#ffe36b', '#ffffff', '#ff7ad9']), size: rnd(2, 4), grav: 0, add: true });
+      ctx.save(); ctx.shadowColor = '#2fd3c8'; ctx.shadowBlur = 16;
+      const split = 0.62, sh = hh * split; ctx.drawImage(im, 0, 0, im.width, im.height * split, x0, y0, w, sh);
+      for (let sx = 0; sx < w; sx += 6) { const wv = Math.sin(sx * 0.045 - G.t * 9) * 5 * (0.3 + sx / w); ctx.drawImage(im, sx * sw, im.height * split, 6 * sw, im.height * (1 - split), x0 + sx, y0 + sh + wv - 1, 6.5, hh - sh + 1); }
+      ctx.restore(); if (h.t < 1.6) text('MAGIC CARPET!', x0 + w / 2, y0 - 8, 10, '#2fd3c8', 'center', '#000', 4); } }
     if (h.type === 'banana' && !h.done) { ctx.save(); ctx.translate(h.x, FLOOR); ctx.fillStyle = '#ffe36b'; ctx.beginPath(); ctx.ellipse(0, 0, 20, 6, 0.1, 0, 7); ctx.fill(); ctx.fillStyle = '#6b4a10'; ctx.fillRect(15, -3, 7, 4); ctx.restore(); }
     if (h.type === 'plane') { const k = h.t / h.life, im = IMG.plane; if (im.width) { const w = 520, hh = w * im.height / im.width; ctx.drawImage(im, lerp(-560, W + 40, k), 30 + Math.sin(k * 6) * 10, w, hh); } if (h.t > 0.6 && h.t < 1.3) for (let i = 0; i < 6; i++) { const yy = lerp(120, FLOOR - 20, (h.t - 0.6) / 0.7); ctx.fillStyle = '#ffe9a8'; ctx.beginPath(); ctx.ellipse(120 + i * 145, yy, 18, 9, 0, 0, 7); ctx.fill(); ctx.strokeStyle = '#a07a2a'; ctx.lineWidth = 2; ctx.stroke(); } }
+    if (h.type === 'ferdy') drawFerdy(h);
     if (h.type === 'ferdy') {
-      const a = h.done ? clamp(h.life - h.t, 0, 1) : 1;
-      ctx.save(); ctx.globalAlpha = a; ctx.fillStyle = 'rgba(140,255,120,.22)'; ctx.beginPath(); ctx.arc(h.x, 400, 62, 0, 7); ctx.fill();
-      drawCard('ferdy', h.x - 45, 355 + Math.sin(G.t * 4) * 6, 90, h.saved ? '#7CFC00' : '#b8f55a'); ctx.restore();
-      if (!h.done) { text('FERDY', h.x, 342, 10, '#b8f55a', 'center', '#000', 4); text(`TAP ME ${h.taps}/10`, h.x, 462, 9, '#fff', 'center', '#000', 4); ctx.fillStyle = '#000'; ctx.fillRect(h.x - 45, 474, 90, 6); ctx.fillStyle = '#b8f55a'; ctx.fillRect(h.x - 45, 474, 90 * (1 - h.t / h.life), 6); }
+      if (!h.done && h.t > h.enter) { text(`TAP ME ${h.taps}/10`, h.x, FLOOR + 18, 9, '#fff', 'center', '#000', 4); ctx.fillStyle = '#000'; ctx.fillRect(h.x - 45, FLOOR + 26, 90, 6); ctx.fillStyle = '#b8f55a'; ctx.fillRect(h.x - 45, FLOOR + 26, 90 * clamp((h.life - h.t) / (h.life - h.enter), 0, 1), 6); }
     }
   }
   for (const it of G.items) drawItem(it);
