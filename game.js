@@ -366,7 +366,9 @@ function animFor(kind, pose, t, prog) {
       case 'windup': return prg('windup') || prg('punch', [0]);
       case 'hug': return loop('hug', 8);
       case 'hit': return loop('hit', 6);
-      case 'ko': case 'apology': return prg('apology') || prg('ko');
+      case 'ko': return prg('ko');
+      case 'apology': return prg('apology') || prg('ko');
+      case 'sorry': return prg('sorry') || prg('ko');
     }
   }
   if (kind === 'hench') {
@@ -1109,6 +1111,7 @@ function drawBoss() {
   if (B.state === 'dance') { o.rot = Math.sin(G.t * 10) * 0.15; }
   if (B.state === 'sleep') o.rot = -0.1;
   if (B.lying) pose = 'ko';
+  if (G.state === 'apology') { pose = G.st < 1.6 ? 'sorry' : 'apology'; o.glow = null; }
   o.glow = B.phase === 3 ? '#ff2030' : '#ff4bd8'; o.glowSize = B.state === 'windup' ? 34 : 18;
   if (B.state === 'hide') o.alpha = 0.85;
   const bprog = pose === 'windup' ? B.t / (B.windup || 1) : pose === 'punch' ? B.t / 0.22 : pose === 'ko' ? (G.state === 'fatality' ? G.st / 0.8 : 1) : 0;
