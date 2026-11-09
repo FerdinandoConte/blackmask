@@ -944,7 +944,7 @@ function drawArena(dark = 0) {
   } else if (ARENA) ctx.drawImage(ARENA, 0, 0, W, H);
   // animated layers: fog, smoke, ambulance lights
   const on = Math.floor(G.t * 4) % 2;
-  [[880, 380, on ? '#3d7bff' : '#ff3b3b'], [925, 384, on ? '#ff3b3b' : '#3d7bff']].forEach(([x, y, c]) => { const g = ctx.createRadialGradient(x, y, 1, x, y, 60); g.addColorStop(0, c); g.addColorStop(1, 'rgba(0,0,0,0)'); ctx.globalAlpha = 0.35; ctx.fillStyle = g; ctx.fillRect(x - 60, y - 60, 120, 120); ctx.globalAlpha = 1; });
+  (ex && ex.width ? [[765, 232, on ? '#3d7bff' : '#ff3b3b'], [932, 236, on ? '#ff3b3b' : '#3d7bff'], [728, 318, on ? '#ff2020' : '#550000'], [842, 318, on ? '#550000' : '#ff2020']] : [[880, 380, on ? '#3d7bff' : '#ff3b3b'], [925, 384, on ? '#ff3b3b' : '#3d7bff']]).forEach(([x, y, c]) => { const g = ctx.createRadialGradient(x, y, 1, x, y, 60); g.addColorStop(0, c); g.addColorStop(1, 'rgba(0,0,0,0)'); ctx.globalAlpha = 0.35; ctx.fillStyle = g; ctx.fillRect(x - 60, y - 60, 120, 120); ctx.globalAlpha = 1; });
   for (let i = 0; i < 3; i++) { const fx = ((G.t * (12 + i * 6) + i * 400) % (W + 600)) - 300; const fg = ctx.createRadialGradient(fx, 440 - i * 20, 10, fx, 440 - i * 20, 260); fg.addColorStop(0, 'rgba(170,150,220,.10)'); fg.addColorStop(1, 'rgba(170,150,220,0)'); ctx.fillStyle = fg; ctx.fillRect(fx - 260, 180, 520, 360); }
   if (dark) { ctx.fillStyle = `rgba(0,0,0,${dark})`; ctx.fillRect(0, 0, W, H); }
 }
