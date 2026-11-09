@@ -30,7 +30,7 @@ const baseImgs = ['fe_fwalk_0.png', 'fe_fwalk_1.png', 'fe_fsick_0.png', 'fe_erun
   'card_emma.jpg', 'card_matteo.jpg', 'card_daniele.jpg', 'card_christian.jpg', 'card_tommaso.jpg', 'card_mari.jpg',
   'card_miriana.jpg', 'card_banana.jpg', 'card_spritz.jpg', 'card_mastro.jpg', 'card_blackmask.jpg', 'card_sofia.jpg',
   'card_ilaria.jpg', 'card_carpet.jpg', 'plane_christian.png', 'tommaso_pu.png', 'win_daniele.jpg', 'win_matteo.jpg',
-  'port_arianna.jpg', 'port_banana.jpg', 'port_blackmask.jpg', 'port_christian.jpg', 'port_daniele.jpg', 'port_elisabetta.jpg', 'port_emma.jpg', 'port_enrico.jpg', 'port_fede.jpg', 'port_ferdy.jpg', 'port_ginevra.jpg', 'port_ilaria.jpg', 'port_mari.jpg', 'port_matteo.jpg', 'port_miriana.jpg', 'port_sofia.jpg', 'port_spritz.jpg', 'port_tommaso.jpg', 'port_mastro.jpg'];
+  'port_arianna.jpg', 'port_banana.jpg', 'port_blackmask.jpg', 'port_christian.jpg', 'port_daniele.jpg', 'port_elisabetta.jpg', 'port_emma.jpg', 'port_enrico.jpg', 'port_fede.jpg', 'port_ferdy.jpg', 'port_ginevra.jpg', 'port_ilaria.jpg', 'port_mari.jpg', 'port_matteo.jpg', 'port_miriana.jpg', 'port_sofia.jpg', 'port_spritz.jpg', 'port_tommaso.jpg', 'port_mastro.jpg', 'intro_hench.jpg', 'intro_party.jpg', 'intro_mastro.jpg', 'intro_ginevra.jpg', 'intro_bm.jpg'];
 let pending = 0, loadedAll = false;
 function loadImg(file, key) {
   pending++;
@@ -1354,7 +1354,9 @@ function drawTitle() {
   text('BLACK MASK  VS  MASTRO LINDO', W / 2, 514, 9, '#9bd8ff', 'center', '#000', 4);
 }
 function drawDifficulty() {
-  drawArena(0.7);
+  drawArena(0.55);
+  drawActor('bm', 'idle', 84, 1, { glow: '#1ec8ff' }, G.t, 0);
+  drawActor('ml', 'idle', 884, -1, { glow: '#ff4bd8' }, G.t, 0);
   bigText('CHOOSE YOUR DIFFICULTY', W / 2, 130, 24);
   ['EASY', 'NORMAL', 'HARD'].forEach((k, i) => {
     const x = 180 + i * 210, d = DIFFS[k];
@@ -1364,6 +1366,26 @@ function drawDifficulty() {
   });
   text('TIP: HOLD BLOCK RIGHT BEFORE A HAYMAKER TO PARRY', W / 2, 420, 9, '#9bd8ff', 'center', '#000', 3);
 }
+const INTRO_PANELS = [[{ im: 'intro_party', r: [0, 0.13, 1, 0.87], pan: 0.06 }], [{ im: 'intro_mastro', from: -1 }, { im: 'intro_ginevra', from: 1 }], [{ im: 'intro_bm', from: 0 }], [{ im: 'intro_hench', from: 0, pan: -0.05 }]];
+function drawIntroPanel(idx) {
+  const ps = INTRO_PANELS[idx]; if (!ps) return;
+  const X = 90, Y = 30, PW = 780, PH = 310, gap = 14, n = ps.length, bw = (PW - gap * (n - 1)) / n, t = G.introT, z = 1 + 0.07 * Math.min(1, t / 5);
+  ps.forEach((pnl, i) => {
+    const im = IMG[pnl.im]; if (!im || !im.width) return;
+    const ek = easeOut(clamp(t / 0.45, 0, 1)), bx = X + i * (bw + gap) + (pnl.from || 0) * (1 - ek) * 420, by = Y;
+    const r = pnl.r || [0, 0, 1, 1]; let sx = r[0] * im.width, sy = r[1] * im.height, sw = (r[2] - r[0]) * im.width, sh = (r[3] - r[1]) * im.height;
+    const want = bw / PH; if (sw / sh > want) { const nw = sh * want; sx += (sw - nw) / 2 + (pnl.pan || 0) * im.width * Math.min(1, t / 5); sw = nw; } else { const nh = sw / want; sy += (sh - nh) * 0.3; sh = nh; }
+    const zw = sw / z, zh = sh / z; sx += (sw - zw) / 2; sy += (sh - zh) / 2;
+    sx = clamp(sx, 0, im.width - zw); sy = clamp(sy, 0, im.height - zh);
+    ctx.save(); ctx.globalAlpha = clamp(t / 0.3, 0, 1);
+    ctx.fillStyle = '#d8b25a'; ctx.fillRect(bx - 4, by - 4, bw + 8, PH + 8); ctx.fillStyle = '#000'; ctx.fillRect(bx - 1, by - 1, bw + 2, PH + 2);
+    ctx.drawImage(im, sx, sy, zw, zh, bx, by, bw, PH);
+    const vg = ctx.createLinearGradient(0, by, 0, by + PH); vg.addColorStop(0, 'rgba(0,0,0,.25)'); vg.addColorStop(0.25, 'rgba(0,0,0,0)'); vg.addColorStop(0.8, 'rgba(0,0,0,0)'); vg.addColorStop(1, 'rgba(0,0,0,.45)'); ctx.fillStyle = vg; ctx.fillRect(bx, by, bw, PH);
+    ctx.restore();
+  });
+  if (idx === 1 && t > 0.5) { const p = 1 + 0.12 * Math.sin(G.t * 8); ctx.save(); ctx.translate(W / 2, Y + PH / 2); ctx.scale(p, p); text('!?', 0, 0, 34, '#ff4bd8', 'center', '#000', 8); ctx.restore(); }
+  if (idx === 3 && t > 0.4) text('x15', X + PW - 60, Y + PH - 34, 30, '#ff4b4b', 'center', '#000', 8);
+}
 function drawIntro() {
   if (IMG.scene.width) ctx.drawImage(IMG.scene, 0, 0, W, 536);
   ctx.fillStyle = 'rgba(0,0,0,.8)'; ctx.fillRect(0, 0, W, H);
@@ -1372,14 +1394,14 @@ function drawIntro() {
     bigText('HOW TO PLAY', W / 2, 46, 22);
     const rows = [['◀ ▶', 'MOVE. YOU AUTO-FACE THE NEAREST ENEMY'], ['PUNCH / KICK', 'KICK IS SLOWER BUT HITS HARDER AND HITS 2'], ['HOLD BLOCK', 'BLOCK. BLOCK JUST BEFORE A HAYMAKER = PARRY'],
       ['FRIEND CARDS', 'TOP LEFT. CALL YOUR FRIENDS (LONG RECHARGE)'], ['NUNCHAKU', 'FILLS WITH HITS. ENEMIES PANIC'], ['WALK OVER DRINKS', 'SPRITZ = POWER + BAC. PEAR JUICE HEALS'],
-      ['BAC 100%', 'FERDY MODE: CONTROLS INVERTED'], ['WATCH OUT', 'GLASSES, PUDDLES, BANANAS, MASSIMILIANO, GRABS']];
+      ['BAC 100%', 'FERDY MODE: CONTROLS INVERTED'], ['WATCH OUT', 'FLYING GLASSES, SPRITZ PUDDLES, BANANA PEELS, GRABS']];
     rows.forEach(([a, b], i) => { text(a, 110, 100 + i * 46, 11, '#1ec8ff', 'left', '#000', 3); text(b, 110, 120 + i * 46, 9, '#fff', 'left', '#000', 3); });
   } else {
     const k = clamp(G.introT / 1.2, 0, 1);
-    wrap(it.t, 820, 18).forEach((l, i) => text(l, W / 2, 210 + i * 30, 18, '#fff', 'center', '#000', 5));
+    drawIntroPanel(G.introIdx);
+    wrap(it.t, 840, 16).forEach((l, i) => text(l, W / 2, 372 + i * 26, 16, '#fff', 'center', '#000', 5));
     const s = it.s.slice(0, Math.floor(it.s.length * k));
-    wrap(s, 760, 12).forEach((l, i) => text(l, W / 2, 300 + i * 24, 12, '#ffb3f0', 'center', '#000', 4));
-    drawCard('', W / 2 - 50, 50, 100, '#d8b25a', G.introIdx === 1 ? 'vs_mastro' : G.introIdx === 3 ? 'vs_hench' : G.introIdx === 2 ? 'vs_blackmask' : 'card_carpet');
+    wrap(s, 800, 11).forEach((l, i) => text(l, W / 2, 420 + i * 22, 11, '#ffb3f0', 'center', '#000', 4));
   }
   if (Math.floor(G.t * 2) % 2) text('TAP TO CONTINUE', W / 2, 500, 10, '#9bd8ff', 'center', '#000', 4);
 }
