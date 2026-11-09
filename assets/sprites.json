@@ -447,5 +447,51 @@
    }
   ]
  },
- "arena": "arena_quadro.jpg"
+ "arena": "arena_quadro.jpg",
+ "fe": {
+  "erun": [
+   {
+    "file": "fe_erun_0.png",
+    "ax": 0.669,
+    "h": 267,
+    "w": 142
+   },
+   {
+    "file": "fe_erun_1.png",
+    "ax": 0.585,
+    "h": 270,
+    "w": 147
+   }
+  ],
+  "fwalk": [
+   {
+    "file": "fe_fwalk_0.png",
+    "ax": 0.62,
+    "h": 307,
+    "w": 150
+   },
+   {
+    "file": "fe_fwalk_1.png",
+    "ax": 0.565,
+    "h": 301,
+    "w": 131
+   }
+  ],
+  "carry": [
+   {
+    "file": "fe_carry_0.png",
+    "ax": 0.462,
+    "h": 286,
+    "w": 212
+   }
+  ],
+  "fsick": [
+   {
+    "file": "fe_fsick_0.png",
+    "ax": 0.478,
+    "h": 202,
+    "w": 205
+   }
+  ]
+ }
 }
