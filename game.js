@@ -30,7 +30,7 @@ const baseImgs = ['fe_fwalk_0.png', 'fe_fwalk_1.png', 'fe_fsick_0.png', 'fe_erun
   'card_emma.jpg', 'card_matteo.jpg', 'card_daniele.jpg', 'card_christian.jpg', 'card_tommaso.jpg', 'card_mari.jpg',
   'card_miriana.jpg', 'card_banana.jpg', 'card_spritz.jpg', 'card_mastro.jpg', 'card_blackmask.jpg', 'card_sofia.jpg',
   'card_ilaria.jpg', 'card_carpet.jpg', 'plane_christian.png', 'tommaso_pu.png', 'win_daniele.jpg', 'win_matteo.jpg',
-  'port_arianna.jpg', 'port_banana.jpg', 'port_blackmask.jpg', 'port_christian.jpg', 'port_daniele.jpg', 'port_elisabetta.jpg', 'port_emma.jpg', 'port_enrico.jpg', 'port_fede.jpg', 'port_ferdy.jpg', 'port_ginevra.jpg', 'port_ilaria.jpg', 'port_mari.jpg', 'port_matteo.jpg', 'port_miriana.jpg', 'port_sofia.jpg', 'port_spritz.jpg', 'port_tommaso.jpg'];
+  'port_arianna.jpg', 'port_banana.jpg', 'port_blackmask.jpg', 'port_christian.jpg', 'port_daniele.jpg', 'port_elisabetta.jpg', 'port_emma.jpg', 'port_enrico.jpg', 'port_fede.jpg', 'port_ferdy.jpg', 'port_ginevra.jpg', 'port_ilaria.jpg', 'port_mari.jpg', 'port_matteo.jpg', 'port_miriana.jpg', 'port_sofia.jpg', 'port_spritz.jpg', 'port_tommaso.jpg', 'port_mastro.jpg'];
 let pending = 0, loadedAll = false;
 function loadImg(file, key) {
   pending++;
@@ -1069,6 +1069,7 @@ PIX.pear = pixCanvas(16, 20, (p, g) => {
 });
 PIX.spit = pixCanvas(7, 10, (p) => { const m = ['..aa...', '.abba..', '.abbba.', 'abbbbba', 'abbcbba', 'abbbbba', 'abbbbba', '.abbba.', '..aaa..', '.......']; m.forEach((r, y) => [...r].forEach((c, x) => { if (c !== '.') p(x, y, { a: '#4f7a2a', b: '#cfff9a', c: '#ffffff' }[c]); })); });
 PIX.peel = pixCanvas(18, 8, (p) => { const m = ['........kk........', '.......kyyk.......', '..kk..kyyyyk..kk..', '.kyyk.kyyyyk.kyyk.', 'kyyyykyywyyykyyyyk', 'kyyyyyyyyyyyyyyyyk', '.kkbyyyyyyyyyybkk.', '...kkkkkkkkkkkk...']; m.forEach((r, y) => [...r].forEach((c, x) => { if (c !== '.') p(x, y, { k: '#4a3510', y: '#ffe14a', w: '#fff6c0', b: '#8a6a1a' }[c]); })); });
+PIX.pecorino = pixCanvas(16, 10, (p) => { const m = ['...kkkkkkkkkk...', '.kkwwwwwwwwwwkk.', 'kwwwwwwwwwwwwwwk', 'kbwwwwwwwwwwwwbk', 'kbbbwwwwwwwwbbbk', 'kybbbbbbbbbbbbyk', 'kyyyyyyyyyyyyyyk', 'kyyyyyyyyyyyyyyk', '.kkyyyyyyyyyykk.', '...kkkkkkkkkk...']; m.forEach((r, y) => [...r].forEach((c, x) => { if (c !== '.') p(x, y, { k: '#5a3a10', w: '#fff3cc', b: '#e8d49a', y: '#d9a441' }[c]); })); });
 PIX.heart = pixCanvas(11, 10, (p) => { const m = ['.kk...kk...', 'krrk.krrk..', 'krwrkrrrrk.', 'krrrrrrrrk.', 'krrrrrrrrk.', '.krrrrrrk..', '..krrrrk...', '...krrk....', '....kk.....', '...........']; m.forEach((r, y) => [...r].forEach((c, x) => { if (c !== '.') p(x, y, { k: '#3a0a18', r: '#ff3d7f', w: '#ffd0e0' }[c]); })); });
 function drawPix(c, x, y, scale) { ctx.imageSmoothingEnabled = false; ctx.drawImage(c, Math.round(x - c.width * scale / 2), Math.round(y - c.height * scale), c.width * scale, c.height * scale); ctx.imageSmoothingEnabled = true; }
 function drawItem(it) {
@@ -1186,7 +1187,7 @@ function drawHazards() {
         ctx.save(); ctx.translate(x + w / 2, y + hh / 2); ctx.rotate(rot); ctx.shadowColor = '#5ad1ff'; ctx.shadowBlur = 18; ctx.drawImage(im, -w / 2, -hh / 2, w, hh); ctx.restore();
         const gx = x + w * 0.9, gy = y + hh * 0.56;
         if (Math.floor(h.t * 6) % 2 === 0 && h.t > 0.3) { ctx.save(); ctx.globalCompositeOperation = 'lighter'; const fl = ctx.createRadialGradient(gx + 18, gy, 2, gx + 18, gy, 34); fl.addColorStop(0, 'rgba(255,240,160,1)'); fl.addColorStop(1, 'rgba(255,120,0,0)'); ctx.fillStyle = fl; ctx.fillRect(gx - 20, gy - 36, 76, 72); ctx.restore(); text('BANG!', gx + 30, gy - 30, 12, '#ffe36b', 'center', '#000', 4); }
-        if (h.t < 1.2) text('CHRISTIAN', x + w * 0.72, y - 6, 11, '#5ad1ff', 'center', '#000', 4); } if (h.t > 0.6 && h.t < 1.3) for (let i = 0; i < 6; i++) { const yy = lerp(120, FLOOR - 20, (h.t - 0.6) / 0.7); ctx.fillStyle = '#ffe9a8'; ctx.beginPath(); ctx.ellipse(120 + i * 145, yy, 18, 9, 0, 0, 7); ctx.fill(); ctx.strokeStyle = '#a07a2a'; ctx.lineWidth = 2; ctx.stroke(); } }
+        if (h.t < 1.2) text('CHRISTIAN', x + w * 0.72, y - 6, 11, '#5ad1ff', 'center', '#000', 4); } if (h.t > 0.6 && h.t < 1.3) for (let i = 0; i < 6; i++) { const yy = lerp(120, FLOOR - 20, (h.t - 0.6) / 0.7); ctx.save(); ctx.translate(120 + i * 145, yy); ctx.rotate(Math.sin(G.t * 9 + i) * 0.4); drawPix(PIX.pecorino, 0, 15, 3); ctx.restore(); } }
     if (h.type === 'ferdy') drawFerdy(h);
     if (h.type === 'ferdy') {
       if (!h.done && h.t > h.enter) { text(`TAP ME ${h.taps}/10`, h.x, FLOOR + 18, 9, '#fff', 'center', '#000', 4); ctx.fillStyle = '#000'; ctx.fillRect(h.x - 45, FLOOR + 26, 90, 6); ctx.fillStyle = '#b8f55a'; ctx.fillRect(h.x - 45, FLOOR + 26, 90 * clamp((h.life - h.t) / (h.life - h.enter), 0, 1), 6); }
@@ -1441,9 +1442,21 @@ function drawFinishOverlay() {
     if (G.st > 7.5) text('TAP TO CONTINUE', W / 2, 505, 10, '#9bd8ff', 'center', '#000', 4);
   }
 }
+function drawFireworks() {
+  ctx.save(); ctx.globalCompositeOperation = 'lighter';
+  for (let f = 0; f < 6; f++) {
+    const per = 1.6 + f * 0.23, ph = ((G.t + f * 0.71) % per) / per, n = Math.floor((G.t + f * 0.71) / per);
+    const cx = 120 + ((n * 977 + f * 331) % 720), cy = 70 + ((n * 541 + f * 173) % 170), col = ['#ff4b8b', '#ffe36b', '#1ec8ff', '#7CFC00', '#ff9a2e', '#d0b3ff'][(n + f) % 6];
+    if (ph < 0.25) { ctx.fillStyle = col; ctx.fillRect(cx - 2, cy + (1 - ph / 0.25) * 260, 4, 10); continue; }
+    const q = (ph - 0.25) / 0.75, r = 20 + easeOut(q) * 90; ctx.globalAlpha = 1 - q; ctx.fillStyle = col;
+    for (let i = 0; i < 18; i++) { const a = i / 18 * Math.PI * 2; ctx.fillRect(cx + Math.cos(a) * r - 2, cy + Math.sin(a) * r + q * q * 40 - 2, 4, 4); }
+    ctx.globalAlpha = 1;
+  }
+  ctx.restore();
+}
 function drawEnding() {
   if (IMG.scene.width) ctx.drawImage(IMG.scene, 0, 0, W, 536);
-  ctx.fillStyle = 'rgba(0,0,0,.62)'; ctx.fillRect(0, 0, W, H);
+  ctx.fillStyle = G.endStage === 2 ? 'rgba(0,0,0,.76)' : 'rgba(0,0,0,.62)'; ctx.fillRect(0, 0, W, H);
   for (const c of G.confetti) { ctx.save(); ctx.translate(c.x, c.y); ctx.rotate(c.r); ctx.fillStyle = c.c; ctx.fillRect(-4, -2, 8, 4); ctx.restore(); }
   if (G.endStage === 0) {
     bigText('BLACK MASK WINS', W / 2, 80, 34, '#d8f6ff', '#1e8cff', '#001428');
@@ -1454,6 +1467,10 @@ function drawEnding() {
     text('NO REAL PUNCH WAS THROWN THAT NIGHT. HE STILL WON.', W / 2, 470, 9, '#9bd8ff', 'center', '#000', 3);
   } else if (G.endStage === 1) {
     const p = 1 + 0.05 * Math.sin(G.t * 4);
+    drawFireworks();
+    drawActor('bm', 'victory', 150, 1, { glow: '#1ec8ff' }, G.t, 0);
+    drawActor('ml', 'apology', 820, -1, {}, G.t, 0);
+    text('SORRY...', 820, FLOOR - 200, 9, '#ffb0e8', 'center', '#000', 3);
     ctx.save(); ctx.translate(W / 2, 160); ctx.scale(p, p); bigText('HAPPY BIRTHDAY', 0, 0, 40); ctx.restore();
     ctx.save(); ctx.translate(W / 2, 250); ctx.scale(p, p); bigText('CHECCO', 0, 0, 66, '#ffffff', '#1ec8ff', '#001428'); ctx.restore();
     text('LEVEL 23 UNLOCKED', W / 2, 340, 22, '#7CFC00', 'center', '#000', 6);
@@ -1464,10 +1481,13 @@ function drawEnding() {
       ['daniele', 'SPITTER, 5TH FLOOR', 'DANIELE'], ['matteo', 'ACCORDION (FROM BED)', 'MATTEO'], ['christian', 'SARDEGNA AIR', 'CHRISTIAN'], ['tommaso', 'BROCCOLI GUY', 'TOMMASO'],
       ['mari', 'JASMINE (BROKEN HEEL)', 'MARI'], ['sofia', 'MAGIC CARPET', 'SOFIA'], ['ilaria', 'MAGIC CARPET', 'ILARIA'], ['miriana', 'MAGIC CARPET · SCREAM COMBO', 'MIRIANA'],
       ['banana', 'BANANA GUY', '???'], ['mastro', 'MASTRO LINDO', 'SAID SORRY']];
-    const y0 = H + 20 - G.endT * 45;
+    const RH = 132, y0 = H + 20 - G.endT * 58;
     bigText('CAST', W / 2, y0 - 40, 22);
-    cast.forEach(([id, role, name], i) => { const y = y0 + i * 92; if (y < -100 || y > H + 100) return; drawCard(id, 260, y, 70, '#d8b25a'); text(name, 350, y + 22, 16, '#fff', 'left', '#000', 5); text(role, 350, y + 50, 9, '#9bd8ff', 'left', '#000', 4); });
-    if (y0 + cast.length * 92 < 120) { G.endStage = 3; G.endT = 0; }
+    cast.forEach(([id, role, name], i) => { const y = y0 + i * RH; if (y < -140 || y > H + 20) return; const im = IMG['port_' + id], left = i % 2 === 0, ph = 118;
+      if (im && im.width) { const w = ph * im.width / im.height, x = left ? 170 : W - 170 - w; ctx.fillStyle = '#d8b25a'; ctx.fillRect(x - 3, y - 3, w + 6, ph + 6); ctx.drawImage(im, x, y, w, ph);
+        const tx = left ? x + w + 26 : x - 26, al = left ? 'left' : 'right'; text(name, tx, y + 40, 20, '#fff', al, '#000', 6); text(role, tx, y + 74, 10, '#9bd8ff', al, '#000', 4); }
+      else { drawCard(id, 260, y, 70, '#d8b25a'); text(name, 350, y + 22, 16, '#fff', 'left', '#000', 5); text(role, 350, y + 50, 9, '#9bd8ff', 'left', '#000', 4); } });
+    if (y0 + cast.length * RH < 120) { G.endStage = 3; G.endT = 0; }
   } else {
     bigText('THANKS FOR PLAYING', W / 2, 200, 28);
     text('MADE WITH LOVE BY YOUR FRIENDS', W / 2, 260, 12, '#ff9ad8', 'center', '#000', 4);
